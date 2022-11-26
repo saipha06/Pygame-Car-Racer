@@ -3,12 +3,12 @@ import time
 import math
 from utils import scale_image, blit_rotate_center
 
-GRASS = scale_image(pygame.image.load("imgs/grass.jpg"), 2.5)
+GRASS = scale_image(pygame.image.load("imgs/Ha5.jpg"), 1)
 TRACK = scale_image(pygame.image.load("imgs/track.png"), 0.9)
 
 TRACK_BORDER = scale_image(pygame.image.load("imgs/track-border.png"), 0.9)
 
-RED_CAR = scale_image(pygame.image.load("imgs/red-car.png"), 0.55)
+RED_CAR = scale_image(pygame.image.load("imgs/c2.jpg"), 0.55)
 GREEN_CAR = scale_image(pygame.image.load("imgs/green-car.png"), 0.55)
 
 WIDTH, HEIGHT = TRACK.get_width(), TRACK.get_height()
@@ -67,34 +67,85 @@ def draw(win, images, player_car):
     pygame.display.update()
 
 
-run = True
-clock = pygame.time.Clock()
-images = [(GRASS, (0, 0)), (TRACK, (0, 0))]
-player_car = PlayerCar(4, 4)
+# run = True
+# clock = pygame.time.Clock()
+# images = [(GRASS, (0, 0)), (TRACK, (0, 0))]
+# player_car = PlayerCar(4, 4)
 
-while run:
-    clock.tick(FPS)
+# while run:
+#     clock.tick(FPS)
 
-    draw(WIN, images, player_car)
+#     draw(WIN, images, player_car)
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
-            break
+#     for event in pygame.event.get():
+#         if event.type == pygame.QUIT:
+#             run = False
+#             break
 
-    keys = pygame.key.get_pressed()
-    moved = False
+#     keys = pygame.key.get_pressed()
+#     moved = False
 
-    if keys[pygame.K_a]:
-        player_car.rotate(left=True)
-    if keys[pygame.K_d]:
-        player_car.rotate(right=True)
-    if keys[pygame.K_w]:
-        moved = True
-        player_car.move_forward()
+#     if keys[pygame.K_a]:
+#         player_car.rotate(left=True)
+#     if keys[pygame.K_d]:
+#         player_car.rotate(right=True)
+#     if keys[pygame.K_w]:
+#         moved = True
+#         player_car.move_forward()
 
-    if not moved:
-        player_car.reduce_speed()
+#     if not moved:
+#         player_car.reduce_speed()
 
 
-pygame.quit()
+
+class Singleton(object):
+    _instance = None
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = super(Singleton, cls).__new__(
+                                cls, *args, **kwargs)
+        return cls._instance
+
+    def draw(self,win, images, player_car):
+        for img, pos in images:
+            win.blit(img, pos)
+
+        player_car.draw(win)
+        pygame.display.update()
+    def play(self):
+        run = True
+        clock = pygame.time.Clock()
+        images = [(GRASS, (0, 0)), (TRACK, (0, 0))]
+        player_car = PlayerCar(4, 4)
+
+        while run:
+            clock.tick(FPS)
+
+            self.draw(WIN, images, player_car)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+                    break
+
+            keys = pygame.key.get_pressed()
+            moved = False
+
+            if keys[pygame.K_a]:
+                player_car.rotate(left=True)
+            if keys[pygame.K_d]:
+                player_car.rotate(right=True)
+            if keys[pygame.K_w]:
+                moved = True
+                player_car.move_forward()
+
+            if not moved:
+                player_car.reduce_speed()
+        pygame.quit()
+
+
+if __name__ == '__main__':
+
+    game = Singleton()
+    print('here')
+    game.play()
